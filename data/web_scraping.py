@@ -86,11 +86,11 @@ def get_poem(row, poem_window):
         for i in range(RETRIES):
             try:
                 poem_text = poem_window.find_element_by_css_selector('.px-md-4').text
+                poem['text'] = poem_text
                 break
             except NoSuchElementException:
                 pass
             time.sleep(LOADING_PAUSE_TIME)
-        poem['text'] = poem_text
         
         tags = poem_window.find_element_by_class_name('poet--aside__tags').text
         if "Forms" in tags:
