@@ -1,3 +1,5 @@
 pandas
 bs4
 scikit-learn
+requests
+numpy
