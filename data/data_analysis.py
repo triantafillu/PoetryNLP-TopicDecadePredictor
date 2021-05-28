@@ -3,6 +3,8 @@ import bs4
 import requests
 from sklearn import preprocessing
 import numpy as np
+import json
+
 
 def scrape_topics():
     
@@ -19,6 +21,7 @@ def scrape_topics():
     topics = [t.lower() for t in topics]
     return topics
 
+
 def encode_topics(topics):
     
     """ Encode topics and return a dictionary of topics and their codes """
@@ -27,6 +30,7 @@ def encode_topics(topics):
     encoded_topics = encoder.fit_transform(topics)
     mapping = dict(zip(encoder.classes_, range(len(encoder.classes_))))
     return mapping
+
 
 def encode_column(x):
     
@@ -40,5 +44,63 @@ def encode_column(x):
                 index = dict[key]
                 zeros_array[index]=1
     return zeros_array
+
+
+def clear_nans(df):
+    """Clears dataframe from nans and empty authors"""
+
     
+    df2 = df.copy()
     
+    #drop columns with most nans
+    df2 = df2.drop(columns=['forms', 'occasions'])
+    #remove rows with empty authors
+    df2 = df2.loc[df2['author'] != '']
+    #drop rows wiht nan and reset row indices
+    df2 = df2.dropna(axis=0).reset_index(drop=True)
+    
+    return df2
+
+
+def init_author_encoding(df):
+    """Create .txt file with mapped labels"""
+    
+    #row to be encoded
+    column = 'author'
+    df2 = df.copy()
+    
+    #encode column with label encoder
+    le = preprocessing.LabelEncoder()
+    le.fit(df2[column])
+    df2['author'] = le.transform(df2['author'])
+    
+    #write dictionary of mapped labels, method tolist() for correct json writing
+    le_name_mapping = dict(zip(le.classes_, le.transform(le.classes_).tolist()))
+    with open(column+'_encoding.txt', 'w') as f:
+        f.write(json.dumps(le_name_mapping))
+    
+    return df2
+
+
+def file_author_encoding(df):
+    """Read mapped previosly author labels from file create new if error"""
+    
+    df2 = df.copy()
+    
+    #read mappings from file create new if error
+    try:
+        with open("author_encoding.txt", "r") as file:
+            contents = file.read()
+    except FileNotFoundError:
+        print("File not found initializign new labels file")
+        df2 = init_author_encoding(df2)
+        
+        return df2
+    
+    #convert txt to dictionary
+    dictionary = json.loads(contents)
+    
+    #apply mappings to column
+    df2.author = df.author.map(dictionary)
+    
+    return df2
