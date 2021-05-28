@@ -49,8 +49,6 @@ def scrap_poems(outfile, pages=100, skip_pages = 0):
                 if  poem:
                     json.dump(poem , outfile, indent=2)
                     outfile.write(',')
-                else:
-                    pass
         
         #  if json wasn't loaded in time link to elements lost
         except StaleElementReferenceException:
@@ -83,7 +81,7 @@ def get_poem(row, poem_window):
             poem['year'] = None
         
         #  scrap poem text and tags
-        poem_window.get(poem_url)
+        poem_window.get(poem['url'])
         time.sleep(LOADING_PAUSE_TIME*2)
         for i in range(RETRIES):
             try:
@@ -116,7 +114,7 @@ def get_poem(row, poem_window):
 
 with open('result.json', 'w') as outfile:
     outfile.write('[')
-    scrap_poems(outfile, 1000, 452)
+    scrap_poems(outfile, 1000)
     outfile.write(']')
     
     
