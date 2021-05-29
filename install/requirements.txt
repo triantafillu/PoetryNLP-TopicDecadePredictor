@@ -3,3 +3,5 @@ bs4
 scikit-learn
 requests
 numpy
+selenium==3.141.0
+
