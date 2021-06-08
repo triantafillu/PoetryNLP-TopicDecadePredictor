@@ -11,4 +11,5 @@ WORKDIR /tf
 ENV PYTHONPATH "${PYTHONPATH}:/tf"
 
 COPY ./requirements.txt ./
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt \
+  && python3 -m spacy download en_core_web_sm
