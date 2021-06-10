@@ -1,3 +1,5 @@
+# docker run -v C:\Users\alexa\Desktop\Projects\Bootcamp-Repository-Language-2:/tf -it --rm -p 8888:8888 poems_analyzer
+# docker build -t poems_analyzer install/ -f install/minimal.Dockerfile
 # Details of the base image are here: https://hub.docker.com/r/tensorflow/tensorflow/tags
 # It runs Python 3.6
 
