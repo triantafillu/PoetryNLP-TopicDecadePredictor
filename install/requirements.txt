@@ -4,4 +4,6 @@ scikit-learn
 requests
 numpy
 selenium==3.141.0
+spacy==3.0.6
+nltk
 
