@@ -268,17 +268,22 @@ def encode_column(x):
 
 
 def clear_nans(df):
-    """Clears dataframe from nans and empty authors"""
-
+    """Clears dataframe from nans and empty authors and text"""
     
     df2 = df.copy()
     
-    #drop columns with most nans
-    df2 = df2.drop(columns=['forms', 'occasions'])
-    #remove rows with empty authors
-    df2 = df2.loc[df2['author'] != '']
-    #drop rows wiht nan and reset row indices
-    df2 = df2.dropna(axis=0).reset_index(drop=True)
+    #remove rows with empty authors and text
+    df2 = df2.loc[df2['text'] != '']
+    
+    df2 = df2.dropna(subset = ['text', 'themes'])
+    
+    df2['title'] = df2['title'].fillna('')
+    df2['url'] = df2['url'].fillna('')
+    df2['author'] = df2['author'].fillna('')
+    df2['year'] = df2['year'].fillna(df2['year'].median())
+    
+    df2 = df2.reset_index(drop=True)
+    
     
     return df2
 
