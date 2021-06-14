@@ -53,7 +53,7 @@ def clear_nans(df):
     df2 = df.copy()
     
     #drop columns with most nans
-    df2 = df2.drop(columns=['forms', 'occasions'])
+    #df2 = df2.drop(columns=['forms', 'occasions'])
     #remove rows with empty authors
     df2 = df2.loc[df2['author'] != '']
     #drop rows wiht nan and reset row indices
