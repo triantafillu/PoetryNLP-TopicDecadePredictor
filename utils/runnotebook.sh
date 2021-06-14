@@ -7,8 +7,8 @@ GPU=$(sudo lshw -numeric -C display)
 
 if [[ $GPU == *"NVIDIA"* ]]; then
     echo "Trying to run with GPU (make sure you have nvidia-docker installed)"
-    sudo docker run --gpus all -u $(id -u):$(id -g) -v $(pwd):/tf -it --rm -p 8888:8888 poems_analyzer
+    sudo docker run --gpus all -u $(id -u):$(id -g) -v $(pwd):/tf -it --rm -p 8891:8888 poems_analyzer
 else
     echo "Running with CPU only"
-    sudo docker run -u $(id -u):$(id -g) -v $(pwd):/tf -it --rm -p 8888:8888 poems_analyzer
+    sudo docker run -u $(id -u):$(id -g) -v $(pwd):/tf -it --rm -p 8891:8888 poems_analyzer
 fi
