@@ -163,12 +163,12 @@ def replace_categories(x):
                   'spirituality': ['spirituality', 'the spiritual']}
 
     if not isinstance(x, float) and len(x)>0:
-        for theme in x:
+        for i in range(len(x)):
+            theme = x[i]
             for k,v in conditions.items():
                 if theme in v:
-                    ind = x.index(theme)
-                    x[ind] = k
-
+                    x[i] = k
+                    
 
 def merge_themes_occasions(df):
 
