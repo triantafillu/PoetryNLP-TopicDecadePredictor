@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>Welcome to Fancy Poetry Analyzer</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+  
+  <div class="form-group">
+    <label for="poem-title">Title:</label>
+    <input name="poem-title" type="text" class="form-control" id="poem-title">
+  </div>
+  <div class="form-group">
+    <label for="poem-text">Text:</label>
+    <textarea name="poem-text" class="form-control" rows="5" id="poem-text" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+{% endblock %}
+
+  <form method="post">
+  
+  <div class="form-group">
+    <label for="poem-title">Title:</label>
+    <input name="poem-title" type="text" class="form-control" id="poem-title">
+  </div>
+  <div class="form-group">
+    <label for="poem-text">Text:</label>
+    <textarea name="poem-text" class="form-control" rows="5" id="poem-text" required></textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  </form> 
+  
+   <form method="post">
+    <label for="title">Title</label>
+    <input name="title" id="title">
+    <label for="text">Text</label>
+    <input type="text" name="text" id="text" required>
+    <input type="submit" value="Predict">
+  </form>
