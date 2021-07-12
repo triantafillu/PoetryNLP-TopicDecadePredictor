@@ -19,27 +19,20 @@ def predict():
         title = request.form['poem-title']
         text = request.form['poem-text']
         error = None
-
-        print(title)
-
-        print(text[:50])
-
-        df_input = pd.DataFrame([[title, text]], columns=['title', 'text'])
-
-        print(df_input)
-
-        df_preproc = preprocess_input(df_input)
-
-        #print(predict(df_preproc))
-
-        predictions =  predict(df_preproc)
+      
 
         if len(title + text) < 150:
             error = 'The text is too short.'
 
         if error is None:
             #here we use our models to predict
-            return render_template('prediction_result.html', prediction_num=predictions)
+            predictions = {}
+            df_input = pd.DataFrame([[title, text]], columns=['title', 'text'])
+            df_preproc = preprocess_input(df_input)
+            predictions['themes'] =  predict_categories(df_preproc)
+            predictions['year'] =  predict_year(df_preproc)
+            
+            return render_template('prediction_result.html', predictions=predictions)
 
         flash(error)
 
@@ -51,12 +44,12 @@ def load_models():
     
     bin_models = {}
     for theme in themes_to_predict:
-        bin_models['model_' + theme] = keras.models.load_model('baby_models/model_' + theme + '.h5')
+        bin_models['model_' + theme] = keras.models.load_model('flask-app/baby_models/model_' + theme + '.h5')
         
     return bin_models
 
 
-def predict(df_input_prp):
+def predict_categories(df_input_prp):
     themes_to_predict = ['nature', 'family', 'love', 'body', 'animals']
     bin_models = load_models()
     
@@ -68,3 +61,9 @@ def predict(df_input_prp):
         models_predictions['model_' + theme] = predictions
         
     return models_predictions
+    
+def predict_year(df_input_prp):
+    year_prediction_model = keras.models.load_model('flask-app/year_prediction_model.h5', compile=False)
+    year_prediction = round(year_prediction_model.predict([df_input_prp])[0][0])
+        
+    return year_prediction

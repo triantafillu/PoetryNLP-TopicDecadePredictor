@@ -53,7 +53,9 @@ def lemmatize(df_input):
 
 def tokenize(df_input):
     #Load tokenizator
-    with open('tokenizer.json') as f: 
+    import os
+    print(os.path.abspath(os.getcwd()))
+    with open('flask-app/tokenizer.json') as f: 
         data_tok = json.load(f) 
         tok = tokenizer_from_json(data_tok)
     
