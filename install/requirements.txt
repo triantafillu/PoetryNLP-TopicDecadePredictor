@@ -6,4 +6,4 @@ numpy
 selenium==3.141.0
 spacy==3.0.6
 nltk
-
+flask==1.1.2
