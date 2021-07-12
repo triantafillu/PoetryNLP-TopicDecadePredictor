@@ -5,7 +5,12 @@
 {% endblock %}
 
 {% block content %}
-  <p>
-    p
-  </p>
+    <table>
+      {% for key, value in prediction_num.items() %}
+         <tr>
+              <th> {{ key }} </th>
+              <td> {{ value }} </td>
+         </tr>
+      {% endfor %}
+      </table>
 {% endblock %}
