@@ -1,12 +1,21 @@
+import pickle
+
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import nltk
 nltk.download('wordnet')
 from nltk.stem import WordNetLemmatizer
+from tensorflow import keras
 nltk.download('stopwords')
 import numpy as np
 
+theme_models = [keras.models.load_model('baby_models/model_animals.h5'),
+                keras.models.load_model('baby_models/model_body.h5'),
+                keras.models.load_model('baby_models/model_family.h5'),
+                keras.models.load_model('baby_models/model_love.h5'),
+                keras.models.load_model('baby_models/model_nature.h5')]
+theme_labels = ['animals', 'body', 'family', 'love', 'nature']
 
 
 def full_form(word):
@@ -51,3 +60,23 @@ def convert_to_decade(x):
   res = dec * 10
   return res
 
+def themes_prediction(text, tokenizer):
+  global theme_models, theme_labels
+  input = preprocess_input(text,tokenizer)
+  scores = []
+  for model in theme_models:
+    res = model.predict(input)
+    if res[0][0] >= 0.3:
+      scores.append(1)
+    else:
+      scores.append(0)
+
+  result = []
+  for i in range(len(scores)):
+    if scores[i] == 1:
+      result.append(theme_labels[i])
+
+  if len(result) == 0:
+    result.append('living')
+
+  return result
