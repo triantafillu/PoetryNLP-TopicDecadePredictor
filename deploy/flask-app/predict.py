@@ -40,7 +40,7 @@ def predict():
 
 
 def load_models():
-    themes_to_predict = ['nature', 'family', 'love', 'body', 'animals']
+    themes_to_predict = ['nature', 'family', 'love', 'body', 'animals', 'arts & sciences', 'religion', 'death', 'war', 'history & politics', 'heartache']
     
     bin_models = {}
     for theme in themes_to_predict:
@@ -50,7 +50,7 @@ def load_models():
 
 
 def predict_categories(df_input_prp):
-    themes_to_predict = ['nature', 'family', 'love', 'body', 'animals']
+    themes_to_predict = ['nature', 'family', 'love', 'body', 'animals', 'arts & sciences', 'religion', 'death', 'war', 'history & politics', 'heartache']
     bin_models = load_models()
     
     models_predictions = {}
