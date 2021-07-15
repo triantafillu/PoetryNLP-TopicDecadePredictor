@@ -12,6 +12,8 @@ import pandas as pd
 
 bp = Blueprint('auth', __name__, url_prefix='/predict')
 
+THEMES_TO_PREDICT = ['nature', 'family', 'love', 'body', 'animals', 'arts & sciences', 'religion', 'death', 'war', 'history & politics', 'heartache']
+
 @bp.route('', methods=('GET', 'POST'))
 def predict():
     if request.method == 'POST':
@@ -40,27 +42,36 @@ def predict():
 
 
 def load_models():
-    themes_to_predict = ['nature', 'family', 'love', 'body', 'animals', 'arts & sciences', 'religion', 'death', 'war', 'history & politics', 'heartache']
     
     bin_models = {}
-    for theme in themes_to_predict:
+    for theme in THEMES_TO_PREDICT:
         bin_models['model_' + theme] = keras.models.load_model('flask-app/baby_models/model_' + theme + '.h5')
         
     return bin_models
 
 
 def predict_categories(df_input_prp):
-    themes_to_predict = ['nature', 'family', 'love', 'body', 'animals', 'arts & sciences', 'religion', 'death', 'war', 'history & politics', 'heartache']
     bin_models = load_models()
     
     models_predictions = {}
-    for theme in themes_to_predict:
+    for theme in THEMES_TO_PREDICT:
         bin_mod = bin_models['model_' + theme]
 
         predictions = bin_mod.predict(df_input_prp)
-        models_predictions['model_' + theme] = predictions
-        
+        models_predictions['model_' + theme] = predictions[0][0]
+    
+    models_predictions = normalize_preds(models_predictions)
+    
     return models_predictions
+    
+
+def normalize_preds(models_predictions):
+    norm_coef = 1/sum(models_predictions.values())
+    for key, value in models_predictions.items():
+        models_predictions[key] = models_predictions[key]*norm_coef
+    
+    return models_predictions
+
     
 def predict_year(df_input_prp):
     year_prediction_model = keras.models.load_model('flask-app/year_prediction_model.h5', compile=False)
