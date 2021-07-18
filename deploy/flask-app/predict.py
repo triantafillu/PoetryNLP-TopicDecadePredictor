@@ -4,15 +4,18 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 
+import json
+import requests
 from tensorflow import keras
 
 from .preprocessing import preprocess_input
 
+import numpy as np
 import pandas as pd
 
 bp = Blueprint('auth', __name__, url_prefix='/predict')
 
-THEMES_TO_PREDICT = ['nature', 'family', 'love', 'body', 'animals', 'arts & sciences', 'religion', 'death', 'war', 'history & politics', 'heartache']
+THEMES_TO_PREDICT = ['nature', 'family', 'love', 'body', 'animals', 'arts & sciences', 'religion', 'death', 'war', 'heartache']
 
 @bp.route('', methods=('GET', 'POST'))
 def predict():
@@ -31,8 +34,9 @@ def predict():
             predictions = {}
             df_input = pd.DataFrame([[title, text]], columns=['title', 'text'])
             df_preproc = preprocess_input(df_input)
-            predictions['themes'] =  predict_categories(df_preproc)
-            predictions['year'] =  predict_year(df_preproc)
+            
+            df_preproc = np.reshape(df_preproc, (1,150))
+            predictions = predict_categories_served(df_preproc)
             
             return render_template('prediction_result.html', predictions=predictions)
 
@@ -59,17 +63,25 @@ def predict_categories(df_input_prp):
 
         predictions = bin_mod.predict(df_input_prp)
         models_predictions['model_' + theme] = predictions[0][0]
-    
-    models_predictions = normalize_preds(models_predictions)
-    
+        
     return models_predictions
     
 
-def normalize_preds(models_predictions):
-    norm_coef = 1/sum(models_predictions.values())
-    for key, value in models_predictions.items():
-        models_predictions[key] = models_predictions[key]*norm_coef
+def predict_categories_served(df_input_prp):    
+    df_input_prp = df_input_prp.tolist()
     
+    payload2 = json.dumps({"instances": df_input_prp})
+    headers = {'content-type': 'application/json', 'Accept-Charset': 'UTF-8'}
+
+    themes_predictions = {}
+    models_predictions = {}
+    for theme in THEMES_TO_PREDICT:
+        r = requests.post('http://localhost:8501/v1/models/model_{}:predict'.format(theme), data=payload2, headers=headers)
+        themes_predictions[theme] = r.json()['predictions'][0][0]
+    r = requests.post('http://localhost:8501/v1/models/year_model:predict', data=payload2, headers=headers)
+    
+    models_predictions['themes'] = themes_predictions
+    models_predictions['year'] = int(r.json()['predictions'][0][0])
     return models_predictions
 
     
