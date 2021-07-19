@@ -16,6 +16,7 @@ import pandas as pd
 bp = Blueprint('auth', __name__, url_prefix='/predict')
 
 THEMES_TO_PREDICT = ['nature', 'family', 'love', 'body', 'animals', 'arts & sciences', 'religion', 'death', 'war', 'heartache']
+THRESHOLD = 0.3
 
 @bp.route('', methods=('GET', 'POST'))
 def predict():
@@ -37,6 +38,8 @@ def predict():
             
             df_preproc = np.reshape(df_preproc, (1,150))
             predictions = predict_categories_served(df_preproc)
+            
+            predictions['themes'] = choose_top_themes(predictions['themes'])
             
             return render_template('prediction_result.html', predictions=predictions)
 
@@ -84,7 +87,24 @@ def predict_categories_served(df_input_prp):
     models_predictions['year'] = int(r.json()['predictions'][0][0])
     return models_predictions
 
-    
+
+def choose_top_themes(models_predictions):
+    best_predictions = {}
+    max_theme = ''
+    max_val = 0.0
+    for key, value in models_predictions.items():
+        if models_predictions[key] > THRESHOLD:
+            best_predictions[key] = value
+        if models_predictions[key] > max_val:
+            max_val = models_predictions[key]
+            max_theme = key
+            
+    if len(best_predictions) == 0:
+        best_predictions[max_theme] = max_val
+     
+    return best_predictions
+       
+     
 def predict_year(df_input_prp):
     year_prediction_model = keras.models.load_model('flask-app/year_prediction_model.h5', compile=False)
     year_prediction = round(year_prediction_model.predict([df_input_prp])[0][0])
