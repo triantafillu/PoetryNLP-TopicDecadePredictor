@@ -1,11 +1,14 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>Here are</h1>
+  <h1>Prediction Results</h1>
 {% endblock %}
 
 {% block content %}
-    <p>{{predictions.year}}.
+    <br>
+    <p>Year prediction: {{predictions.year}}
+    <br>
+    <p>Predicted categories:</p>
     <table>
       {% for key, value in predictions.themes.items() %}
          <tr>
@@ -14,4 +17,5 @@
          </tr>
       {% endfor %}
       </table>
+      <a href="predict" class="btn btn-info" role="button">Predict More</a>
 {% endblock %}

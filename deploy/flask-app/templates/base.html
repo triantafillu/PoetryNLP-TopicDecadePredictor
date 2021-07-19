@@ -13,20 +13,25 @@
 
   <!-- Latest compiled JavaScript -->
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
+  
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <section class="content">
-  <div class="jumbotron text-center">
     <header>
       {% block header %}{% endblock %}
     </header>
-  </div>
+  
   <div class="container">
-    <div class="alert alert-danger">
-      {% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-      {% endfor %}
-    </div>
-      {% block content %}{% endblock %}
+    {% if get_flashed_messages() %}
+      <div class="alert alert-danger">
+        {% for message in get_flashed_messages() %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
   </div>
 </section>
+
+
