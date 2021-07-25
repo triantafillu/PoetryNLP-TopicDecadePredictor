@@ -1,11 +1,13 @@
-## Group
-Language 2
-
 ## Participants
 Aleksandra Triantafillu, Ivakhniuk Volodymyr, Danylo Berdnyk
 
 ## Idea
-Predict the year the poem was written, the topic of the poem
+The project consists of 2 models:
+* Model which predicts the **_theme_** of the poem.
+* Model which predicts the _**year**_ the poem could have been written.
 
 ## Data Sources
-metrolyrics.com
+* poetryfoundation.org
+* poets.org
+* poetryarchive.org
+
